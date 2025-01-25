@@ -1,10 +1,6 @@
-"use client"
-
 import { Inter, Roboto_Mono } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from 'styled-components'
-import { GlobalStyle } from '../styles/global-styles'
-import { theme } from '../styles/theme'
+import StyledComponentsRegistry from '../lib/registry'
+import { ThemeContainer } from '../components/providers/ThemeContainer'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -16,6 +12,16 @@ const robotoMono = Roboto_Mono({
   display: 'swap',
 });
 
+export const metadata = {
+  title: 'Rodrigo Cinelli - Full Stack Developer',
+  description: 'Portfólio profissional especializado em Next.js e TypeScript',
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1.0,
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -24,10 +30,11 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={inter.className}>
-        <ThemeProvider theme={theme}>
-          <GlobalStyle />
-          {children}
-        </ThemeProvider>
+        <StyledComponentsRegistry>
+          <ThemeContainer>
+            {children}
+          </ThemeContainer>
+        </StyledComponentsRegistry>
       </body>
     </html>
   )

@@ -2,8 +2,9 @@
 const nextConfig = {
   compiler: {
     styledComponents: {
+      ssr: true,
       displayName: true,
-      ssr: true
+      minify: true
     }
   }
 }
