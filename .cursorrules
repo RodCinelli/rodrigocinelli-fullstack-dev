@@ -1,0 +1,196 @@
+### Standard Portfolio Structure for Full-Stack Developers ###
+
+## STEP 1 - Step by Step to Set Up the Project ##
+
+1. Initial Setup
+
+npx create-next-app@latest --typescript
+cd your-portfolio
+npm install styled-components @types/styled-components
+npm install react-icons # For icons
+
+2. Folder Structure (Next.js)
+
+/src
+    /components
+        Navbar.tsx
+        Hero.tsx
+        About.tsx
+        Skills.tsx
+        Projects.tsx
+        Contact.tsx
+        Footer.tsx
+    /styles
+        global-styles.ts
+        theme.ts (for light/dark themes)
+    /pages
+        index.tsx
+    /public
+        /assets (images, icons, PDFs)
+
+3. SEO and Performance
+
+Add meta tags in _document.tsx:
+
+<Html lang="pt-BR">
+    <Head>
+        <meta name="description" content="Portfólio de um desenvolvedor full-stack especializado em Next.js e TypeScript" />
+    </Head>
+</Html>
+
+## STEP 2 - Development of the Portfolio ##
+
+The structure below is based on 2025 trends and professional portfolio examples:
+
+1. Fixed Navbar (with Hamburger Menu for Mobile)
+
+    Links to main sections (Home, About, Projects, Contact).
+
+    Social media icons (GitHub, LinkedIn) and light/dark mode (optional).
+
+    Responsive design with smooth transitions
+
+    Implementation of Sections
+
+a. Navbar
+
+Use useState to control the hamburger menu on mobile.
+
+Example with styled-components:
+
+import { useState } from 'react';
+import { BurgerMenu, NavLinks } from './styles';
+
+const Navbar = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+    <NavbarContainer>
+        <BurgerMenu onClick={() => setIsOpen(!isOpen)}>☰</BurgerMenu>
+        <NavLinks isOpen={isOpen}>
+            <a href="#home">Home</a>
+            <a href="#projects">Projetos</a>
+        </NavLinks>
+    </NavbarContainer>
+    );
+};
+
+2. Hero Section
+
+    Impactful title (e.g. "Full-Stack Developer | Next.js Specialist").
+
+    Subtitle or catchphrase (e.g. "Turning ideas into scalable solutions").
+
+    Call-to-action (e.g. "View Projects" or "Download CV").
+
+    Subtle animation (e.g. typing or parallax effect)
+
+b. Hero Section
+
+Animations with CSS Keyframes or Framer Motion:
+
+const HeroTitle = styled.h1`
+    animation: fadeIn 1.5s ease-out;
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+`;
+
+3. About Me Section
+
+    Brief professional biography (1-2 paragraphs).
+
+    Highlight technical skills (front-end, back-end, DevOps).
+
+    Timeline of experience or education (optional)
+
+    Professional photo or stylized illustration
+
+4. Skills Section
+
+    Grid with technology icons (React, Node.js, AWS, etc.).
+
+    Proficiency levels or categorized tags (e.g. "Front-End", "Cloud").
+
+    Concise explanation of preferred stacks (e.g. MERN, T3)
+
+5. Projects Section
+
+    Interactive cards with:
+
+        Image of the project (or GIF/video).
+
+        Title, description and technologies used.
+
+        Links to demo and code (GitHub).
+
+    Filters by category (e.g. "Full-Stack", "AI")
+
+c. Projects Section
+
+Dynamic data via getStaticProps (Next.js):
+
+export async function getStaticProps() {
+    const projects = await fetch('api/projects'); // Mocked data or CMS
+    return { props: { projects } };
+}
+
+6. Experience/Contributions section
+
+    List of previous jobs or freelance projects.
+
+    Open-source contributions (with links to repositories).
+
+    Relevant certifications (e.g. AWS, Docker)
+
+7. Contact Section
+
+    Simple form with validation (using libraries like Formik).
+
+    Direct links to email and social networks.
+
+    Interactive map or QR Code for LinkedIn (optional)
+
+8. Footer
+
+    Copyright message and credits.
+
+    "Back to top" button
+
+## STEP 3 - UX/UI Best Practices ##
+
+1. Responsiveness
+
+    Use @media queries and relative units (rem, %).
+
+    Test on mobile devices with Chrome DevTools.
+
+2. Accessibility
+
+    Add aria-labels to icons and buttons.
+
+    Use appropriate color contrasts (tools like Contrast Checker).
+
+3. Performance
+
+    Optimize images with next/image.
+
+    Use code splitting (Next.js already does this automatically).
+
+4. Consistent Design
+
+    Define a color and typography system in theme.ts.
+
+    Example with styled-components:
+
+    export const theme = {
+    colors: {
+        primary: '#2F80ED',
+        secondary: '#333333',
+    },
+    fonts: {
+        primary: 'Inter, sans-serif',
+    },
+};
+
+## Always remember to consult the official documentation for next.js, typescript and css styled components. ##

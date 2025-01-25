@@ -1,0 +1,11 @@
+{
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "files.exclude": {
+        "**/.git": true,
+        "**/node_modules/math-intrinsics/tsconfig.json": true
+    },
+    "typescript.validate.enable": true,
+    "typescript.validate.excludePatterns": [
+        "**/node_modules/math-intrinsics/**"
+    ]
+} 
