@@ -1,10 +1,12 @@
-export const theme = {
+export const lightTheme = {
   colors: {
-    background: '#f5f5f5',
-    text: '#333',
-    primary: '#2F80ED',
-    secondary: '#333333',
-    accent: '#0070f3',
+    background: '#F8F8FF',
+    text: '#2F2F2F',
+    primary: '#4B0082',
+    secondary: '#6A5ACD',
+    accent: '#9370DB',
+    hero: 'linear-gradient(135deg, #4B0082, #6A5ACD)',
+    card: '#FFFFFF',
     gray: {
       50: '#fafafa',
       100: '#f5f5f5',
@@ -24,4 +26,36 @@ export const theme = {
     desktop: '1024px',
     wide: '1280px'
   }
-} 
+}
+
+export const darkTheme = {
+  colors: {
+    background: '#121212',
+    text: '#F5F5F5',
+    primary: '#9370DB',
+    secondary: '#6A5ACD',
+    accent: '#B39DDB',
+    hero: 'linear-gradient(135deg, #9370DB, #1A1A1A)',
+    card: '#262626',
+    gray: {
+      50: '#212121',
+      100: '#424242',
+      200: '#616161',
+      300: '#757575',
+      400: '#9e9e9e',
+      500: '#bdbdbd',
+      600: '#e0e0e0',
+      700: '#eeeeee',
+      800: '#f5f5f5',
+      900: '#fafafa',
+    }
+  },
+  breakpoints: {
+    mobile: '320px',
+    tablet: '768px',
+    desktop: '1024px',
+    wide: '1280px'
+  }
+}
+
+export const theme = lightTheme; 
