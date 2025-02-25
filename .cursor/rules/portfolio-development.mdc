@@ -13,20 +13,45 @@ Configuração TypeScript: No tsconfig.json, habilite strict: true para type saf
 Tema Global: Crie um arquivo src/styles/theme.ts com variáveis de estilo (exemplo abaixo), que será usado com Styled Components:
 
 ```
-export const theme = {
+export const lightTheme = {
   colors: {
-    primary: '#1A202C', // Dark
-    secondary: '#4A90E2', // Azul vibrante
-    background: '#F7FAFC', // Claro
-    text: '#2D3748',
-  },
-  fonts: {
-    main: "'Inter', sans-serif",
+    background: '#F8F8FF',
+    text: '#2F2F2F',
+    primary: '#4B0082',
+    secondary: '#6A5ACD',
+    accent: '#9370DB',
+    hero: 'linear-gradient(135deg, #4B0082, #6A5ACD)',
+    card: '#FFFFFF',
+    // ... outros elementos de cores
   },
   breakpoints: {
-    mobile: '768px',
-  },
+    mobile: '320px',
+    tablet: '768px',
+    desktop: '1024px',
+    wide: '1280px'
+  }
 };
+
+export const darkTheme = {
+  colors: {
+    background: '#121212',
+    text: '#F5F5F5',
+    primary: '#9370DB',
+    secondary: '#6A5ACD',
+    accent: '#B39DDB',
+    hero: 'linear-gradient(135deg, #9370DB, #1A1A1A)',
+    card: '#262626',
+    // ... outros elementos de cores
+  },
+  breakpoints: {
+    mobile: '320px',
+    tablet: '768px',
+    desktop: '1024px',
+    wide: '1280px'
+  }
+};
+
+export const theme = lightTheme;
 ```
 Estilos Globais: Em src/styles/global-styles.ts, defina resets e estilos base:
 
@@ -72,7 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 A Navbar será o ponto de navegação principal, elegante e interativa.
 
-Design: Uma barra fixa no topo, com fundo transparente que fica opaco ao rolar a página. Inclua um logo (seu nome ou ícone) e links para “Sobre”, “Projetos”, “Habilidades” e “Contato”. Adicione um toggle de tema (claro/escuro).
+Design: Uma barra fixa no topo, com fundo transparente que fica opaco ao rolar a página. Inclua um logo (seu nome ou ícone) e links para "Sobre", "Projetos", "Habilidades" e "Contato". Adicione um toggle de tema (claro/escuro).
 Interatividade: Links com hover suave (mudança de cor ou escala) e toggle animado com Framer Motion.
 Implementação:
 
@@ -87,18 +112,20 @@ const Nav = styled.nav<{ isScrolled: boolean }>`
   top: 0;
   width: 100%;
   padding: 1rem 2rem;
-  background: ${({ isScrolled }) =>
-    isScrolled ? 'rgba(26, 32, 44, 0.9)' : 'transparent'};
+  background: ${({ isScrolled, theme }) =>
+    isScrolled ? 'rgba(75, 0, 130, 0.9)' : 'transparent'};
   transition: background 0.3s ease;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  z-index: 100;
 `;
 
 const NavLink = styled(motion.a)`
-  color: white;
+  color: ${({ theme }) => theme.colors.text};
   margin: 0 1rem;
   text-decoration: none;
+  font-weight: 500;
 `;
 
 export default function Navbar() {
@@ -112,7 +139,11 @@ export default function Navbar() {
 
   return (
     <Nav isScrolled={isScrolled}>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      <motion.div 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }}
+        style={{ color: isScrolled ? '#FFFFFF' : '#2F2F2F' }}
+      >
         Rodrigo Cinelli
       </motion.div>
       <div>
@@ -141,7 +172,7 @@ export default function Navbar() {
 
 A Hero Section será o destaque inicial, com impacto visual e animações.
 
-Design: Fundo com gradiente ou vetor (public/vectors), seu nome, título (ex.: “Desenvolvedor Full-Stack”) e um botão de ação.
+Design: Fundo com gradiente ou vetor (public/vectors), seu nome, título (ex.: "Desenvolvedor Full-Stack") e um botão de ação.
 Interatividade: Texto com entrada animada e botão com hover divertido.
 Implementação:
 
@@ -155,7 +186,7 @@ const HeroWrapper = styled.section`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #4a90e2, #1a202c);
+  background: ${({ theme }) => theme.colors.hero};
   color: white;
 `;
 
@@ -166,6 +197,8 @@ const Button = styled(motion.button)`
   border-radius: 8px;
   color: white;
   cursor: pointer;
+  font-weight: 600;
+  margin-top: 2rem;
 `;
 
 export default function Hero() {
@@ -272,7 +305,7 @@ export default function Skills() {
       {skills.map((skill) => (
         <SkillItem
           key={skill.name}
-          whileHover={{ scale: 1.2, color: '#4A90E2' }}
+          whileHover={{ scale: 1.2, color: '${({ theme }) => theme.colors.accent}' }}
           transition={{ type: 'spring' }}
         >
           {skill.icon}
@@ -430,7 +463,7 @@ export default function Contact() {
 Finalize com um rodapé simples e funcional.
 
 Design: Copyright e links sociais.
-Interatividade: Ícones com animação e botão “voltar ao topo”.
+Interatividade: Ícones com animação e botão "voltar ao topo".
 Implementação:
 
 ```
@@ -524,5 +557,5 @@ Deploy no Vercel para aproveitar as otimizações do Next.js.
 Inspire-se em portfólios como os de Sarah Drasner ou Brittany Chiang:
 
 Adicione microinterações (ex.: partículas no Hero com bibliotecas como react-particles).
-Use gradientes modernos e tipografia ousada (ex.: Google Fonts como “Inter”).
+Use gradientes modernos e tipografia ousada (ex.: Google Fonts como "Inter").
 Implemente um tema claro/escuro completo com o ThemeContainer.tsx.
