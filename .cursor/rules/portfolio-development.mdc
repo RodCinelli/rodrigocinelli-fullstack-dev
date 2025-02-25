@@ -1,0 +1,528 @@
+---
+description: Portfolio Development Step by Step
+globs: 
+---
+# Passo a Passo para o Desenvolvimento do Portfólio
+
+### 1. Setup e Configuração Inicial
+
+ Antes de começar a codificar as seções, vamos garantir que o ambiente esteja pronto:
+
+Dependências: Todas as bibliotecas necessárias já estão no package.json (Next.js 14.1.0, Styled Components 6.1.8, Framer Motion 12.4.7, React Icons 5.5.0, TypeScript 5). Execute npm install para instalar tudo, caso ainda não tenha feito.
+Configuração TypeScript: No tsconfig.json, habilite strict: true para type safety.
+Tema Global: Crie um arquivo src/styles/theme.ts com variáveis de estilo (exemplo abaixo), que será usado com Styled Components:
+
+```
+export const theme = {
+  colors: {
+    primary: '#1A202C', // Dark
+    secondary: '#4A90E2', // Azul vibrante
+    background: '#F7FAFC', // Claro
+    text: '#2D3748',
+  },
+  fonts: {
+    main: "'Inter', sans-serif",
+  },
+  breakpoints: {
+    mobile: '768px',
+  },
+};
+```
+Estilos Globais: Em src/styles/global-styles.ts, defina resets e estilos base:
+
+```
+import { createGlobalStyle } from 'styled-components';
+
+export const GlobalStyle = createGlobalStyle`
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: ${({ theme }) => theme.fonts.main};
+    background: ${({ theme }) => theme.colors.background};
+    color: ${({ theme }) => theme.colors.text};
+  }
+`;
+```
+
+Layout Base: No src/app/layout.tsx, configure o layout global com tema e estilos:
+
+```
+import { ThemeProvider } from 'styled-components';
+import { GlobalStyle } from '../styles/global-styles';
+import { theme } from '../styles/theme';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="pt-BR">
+      <body>
+        <ThemeProvider theme={theme}>
+          <GlobalStyle />
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+### 2. Navbar (src/components/Navbar.tsx)
+
+A Navbar será o ponto de navegação principal, elegante e interativa.
+
+Design: Uma barra fixa no topo, com fundo transparente que fica opaco ao rolar a página. Inclua um logo (seu nome ou ícone) e links para “Sobre”, “Projetos”, “Habilidades” e “Contato”. Adicione um toggle de tema (claro/escuro).
+Interatividade: Links com hover suave (mudança de cor ou escala) e toggle animado com Framer Motion.
+Implementação:
+
+```
+import { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { motion } from 'framer-motion';
+import { FaSun, FaMoon } from 'react-icons/fa';
+
+const Nav = styled.nav<{ isScrolled: boolean }>`
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 1rem 2rem;
+  background: ${({ isScrolled }) =>
+    isScrolled ? 'rgba(26, 32, 44, 0.9)' : 'transparent'};
+  transition: background 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const NavLink = styled(motion.a)`
+  color: white;
+  margin: 0 1rem;
+  text-decoration: none;
+`;
+
+export default function Navbar() {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <Nav isScrolled={isScrolled}>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        Rodrigo Cinelli
+      </motion.div>
+      <div>
+        <NavLink href="#about" whileHover={{ scale: 1.1 }}>
+          Sobre
+        </NavLink>
+        <NavLink href="#projects" whileHover={{ scale: 1.1 }}>
+          Projetos
+        </NavLink>
+        <NavLink href="#skills" whileHover={{ scale: 1.1 }}>
+          Habilidades
+        </NavLink>
+        <NavLink href="#contact" whileHover={{ scale: 1.1 }}>
+          Contato
+        </NavLink>
+        <motion.button whileHover={{ rotate: 360 }}>
+          <FaSun />
+        </motion.button>
+      </div>
+    </Nav>
+  );
+}
+```
+
+### 3. Hero Section (src/sections/Hero.tsx)
+
+A Hero Section será o destaque inicial, com impacto visual e animações.
+
+Design: Fundo com gradiente ou vetor (public/vectors), seu nome, título (ex.: “Desenvolvedor Full-Stack”) e um botão de ação.
+Interatividade: Texto com entrada animada e botão com hover divertido.
+Implementação:
+
+```
+import styled from 'styled-components';
+import { motion } from 'framer-motion';
+
+const HeroWrapper = styled.section`
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #4a90e2, #1a202c);
+  color: white;
+`;
+
+const Button = styled(motion.button)`
+  padding: 1rem 2rem;
+  background: ${({ theme }) => theme.colors.secondary};
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+`;
+
+export default function Hero() {
+  return (
+    <HeroWrapper>
+      <motion.h1
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 1 }}
+      >
+        Rodrigo Cinelli
+      </motion.h1>
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+      >
+        Desenvolvedor Full-Stack
+      </motion.p>
+      <Button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+        Veja Meus Projetos
+      </Button>
+    </HeroWrapper>
+  );
+}
+```
+
+### 4. About Me Section (src/sections/About.tsx)
+
+Aqui você se apresenta de forma mais detalhada.
+
+Design: Layout limpo com foto ou avatar, bio e highlights.
+Interatividade: Elementos aparecem ao rolar a página.
+Implementação:
+
+```
+import styled from 'styled-components';
+import { motion } from 'framer-motion';
+
+const AboutWrapper = styled.section`
+  padding: 4rem 2rem;
+  display: flex;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+`;
+
+export default function About() {
+  return (
+    <AboutWrapper id="about">
+      <motion.img
+        src="/vectors/avatar.svg"
+        alt="Rodrigo"
+        initial={{ scale: 0 }}
+        whileInView={{ scale: 1 }}
+        transition={{ duration: 0.5 }}
+      />
+      <motion.div
+        initial={{ opacity: 0, x: -50 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        <h2>Sobre Mim</h2>
+        <p>Sou um desenvolvedor apaixonado por criar soluções modernas e performáticas.</p>
+      </motion.div>
+    </AboutWrapper>
+  );
+}
+```
+
+### 5. Skills Section (src/sections/Skills.tsx)
+
+Mostre suas habilidades técnicas de forma visual.
+
+Design: Grid de ícones ou barras de progresso.
+Interatividade: Hover com animação nos ícones.
+Implementação:
+
+```
+import styled from 'styled-components';
+import { motion } from 'framer-motion';
+import { FaJs, FaReact, FaNodeJs } from 'react-icons/fa';
+
+const SkillsWrapper = styled.section`
+  padding: 4rem 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 2rem;
+`;
+
+const SkillItem = styled(motion.div)`
+  text-align: center;
+`;
+
+export default function Skills() {
+  const skills = [
+    { icon: <FaJs />, name: 'JavaScript' },
+    { icon: <FaReact />, name: 'React' },
+    { icon: <FaNodeJs />, name: 'Node.js' },
+  ];
+
+  return (
+    <SkillsWrapper id="skills">
+      {skills.map((skill) => (
+        <SkillItem
+          key={skill.name}
+          whileHover={{ scale: 1.2, color: '#4A90E2' }}
+          transition={{ type: 'spring' }}
+        >
+          {skill.icon}
+          <p>{skill.name}</p>
+        </SkillItem>
+      ))}
+    </SkillsWrapper>
+  );
+}
+```
+
+### 6. Projects Section (src/sections/Projects.tsx)
+
+Destaque seus projetos com cards interativos.
+
+Design: Grid de cards com imagem, título e descrição.
+Interatividade: Cards com hover e clique para modal.
+Implementação:
+
+```
+import styled from 'styled-components';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
+
+const ProjectsWrapper = styled.section`
+  padding: 4rem 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+`;
+
+const ProjectCard = styled(motion.div)`
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+export default function Projects() {
+  const projects = [
+    { title: 'Projeto 1', image: '/vectors/project1.svg', desc: 'Um app incrível' },
+  ];
+
+  return (
+    <ProjectsWrapper id="projects">
+      {projects.map((project) => (
+        <ProjectCard
+          key={project.title}
+          whileHover={{ y: -10 }}
+          transition={{ type: 'spring' }}
+        >
+          <Image src={project.image} alt={project.title} width={300} height={200} />
+          <h3>{project.title}</h3>
+          <p>{project.desc}</p>
+        </ProjectCard>
+      ))}
+    </ProjectsWrapper>
+  );
+}
+```
+
+### 7. Experience/Contributions Section (src/sections/Experience.tsx)
+
+Liste experiências ou contribuições em um formato de linha do tempo.
+
+Design: Lista ou timeline vertical.
+Interatividade: Itens animados ao entrar na tela.
+Implementação:
+
+```
+import styled from 'styled-components';
+import { motion } from 'framer-motion';
+
+const ExpWrapper = styled.section`
+  padding: 4rem 2rem;
+`;
+
+const ExpItem = styled(motion.div)`
+  margin-bottom: 2rem;
+`;
+
+export default function Experience() {
+  return (
+    <ExpWrapper id="experience">
+      <ExpItem
+        initial={{ opacity: 0, x: 50 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h3>Desenvolvedor Full-Stack - Empresa X</h3>
+        <p>2022 - Presente</p>
+        <p>Desenvolvi aplicações web modernas.</p>
+      </ExpItem>
+    </ExpWrapper>
+  );
+}
+```
+
+### 8. Contact Section (src/sections/Contact.tsx)
+
+Facilite o contato com um formulário elegante.
+
+Design: Formulário simples com ícones sociais.
+Interatividade: Campos animados ao focar.
+Implementação:
+
+```
+import styled from 'styled-components';
+import { motion } from 'framer-motion';
+import { FaGithub, FaLinkedin } from 'react-icons/fa';
+
+const ContactWrapper = styled.section`
+  padding: 4rem 2rem;
+  text-align: center;
+`;
+
+const Input = styled(motion.input)`
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  width: 100%;
+  max-width: 400px;
+`;
+
+export default function Contact() {
+  return (
+    <ContactWrapper id="contact">
+      <h2>Entre em Contato</h2>
+      <form>
+        <Input
+          placeholder="Nome"
+          whileFocus={{ scale: 1.05 }}
+          transition={{ type: 'spring' }}
+        />
+        <Input placeholder="Email" whileFocus={{ scale: 1.05 }} />
+        <Input placeholder="Mensagem" whileFocus={{ scale: 1.05 }} />
+        <motion.button type="submit" whileHover={{ scale: 1.1 }}>
+          Enviar
+        </motion.button>
+      </form>
+      <div>
+        <motion.a href="#" whileHover={{ scale: 1.2 }}>
+          <FaGithub />
+        </motion.a>
+        <motion.a href="#" whileHover={{ scale: 1.2 }}>
+          <FaLinkedin />
+        </motion.a>
+      </div>
+    </ContactWrapper>
+  );
+}
+```
+
+### 9. Footer (src/components/Footer.tsx)
+
+Finalize com um rodapé simples e funcional.
+
+Design: Copyright e links sociais.
+Interatividade: Ícones com animação e botão “voltar ao topo”.
+Implementação:
+
+```
+import styled from 'styled-components';
+import { motion } from 'framer-motion';
+import { FaGithub, FaLinkedin } from 'react-icons/fa';
+
+const FooterWrapper = styled.footer`
+  padding: 2rem;
+  text-align: center;
+  background: ${({ theme }) => theme.colors.primary};
+  color: white;
+`;
+
+export default function Footer() {
+  return (
+    <FooterWrapper>
+      <p>&copy; 2023 Rodrigo Cinelli</p>
+      <div>
+        <motion.a href="#" whileHover={{ scale: 1.2 }}>
+          <FaGithub />
+        </motion.a>
+        <motion.a href="#" whileHover={{ scale: 1.2 }}>
+          <FaLinkedin />
+        </motion.a>
+      </div>
+      <motion.button
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        whileHover={{ scale: 1.1 }}
+      >
+        Voltar ao Topo
+      </motion.button>
+    </FooterWrapper>
+  );
+}
+```
+
+### 10. Integração no page.tsx
+
+No src/app/page.tsx, reúna todas as seções:
+
+```
+import Navbar from '../components/Navbar';
+import Hero from '../sections/Hero';
+import About from '../sections/About';
+import Skills from '../sections/Skills';
+import Projects from '../sections/Projects';
+import Experience from '../sections/Experience';
+import Contact from '../sections/Contact';
+import Footer from '../components/Footer';
+
+export default function Home() {
+  return (
+    <>
+      <Navbar />
+      <Hero />
+      <About />
+      <Skills />
+      <Projects />
+      <Experience />
+      <Contact />
+      <Footer />
+    </>
+  );
+}
+```
+
+### 11. Performance, Responsividade e Acessibilidade
+
+Performance: Use o componente Image do Next.js para imagens otimizadas e lazy loading com Framer Motion (lazy: true).
+Responsividade: Adicione media queries no Styled Components:
+
+```
+const Wrapper = styled.section`
+  padding: 4rem 2rem;
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: 2rem 1rem;
+  }
+`;
+```
+
+Acessibilidade: Use HTML semântico (<nav>, <section>), aria-label nos links e alt nas imagens.
+
+### 12. Testes e Deploy
+
+Teste em diferentes dispositivos e navegadores.
+Deploy no Vercel para aproveitar as otimizações do Next.js.
+
+### 13. Inspirações e Toques Finais
+
+Inspire-se em portfólios como os de Sarah Drasner ou Brittany Chiang:
+
+Adicione microinterações (ex.: partículas no Hero com bibliotecas como react-particles).
+Use gradientes modernos e tipografia ousada (ex.: Google Fonts como “Inter”).
+Implemente um tema claro/escuro completo com o ThemeContainer.tsx.
